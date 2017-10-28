@@ -30,11 +30,11 @@ We can write a C program to spit out 6502 assembly for us:
         {
             int delta = after[x] - before[x];
             if( delta == 0 )
-                ;
+                ; // skip digit
             else
             if( delta == 1 )
             {
-                if( before[x] == '0')
+                if( (before[x] == '0') && (x != 1) )
                     one( x );
                 else
                     inc( x );

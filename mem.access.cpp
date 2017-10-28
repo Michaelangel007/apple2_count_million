@@ -169,11 +169,11 @@ Count_10_000
 #endif
 
             if( delta == 0 )
-                ;
+                ; // skip digit
             else
             if( delta == 1 )
             {
-                if( before[x] == '0')
+                if( (before[x] == '0') && (x != 1) )
                     one( x );
                 else
                     inc( x );
