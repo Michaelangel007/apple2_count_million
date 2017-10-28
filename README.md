@@ -1,4 +1,16 @@
-# Count to 1,000,000 on Apple 2 6502
+# Count to 1,000,000 on Apple 2 in 6502 assembly
+
+The January 1984 issue of Nibble Magazine
+
+![Cover](pics/page_cover.png)
+
+On page 62:
+
+![Page 62](pics/page_62.png)
+
+Had this article `HYPERCOUNTER` by Ron Macken and Bill Consoli
+
+Unfortunately it is slow.
 
 The fastest way to count from 0 to 1,000,000 is to only change
 the bytes that actually change from x to x+1.
