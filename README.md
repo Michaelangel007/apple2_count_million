@@ -12,8 +12,8 @@ Had this article `HYPERCOUNTER` by Ron Macken and Bill Consoli
 
 Unfortunately it is slow.
 
-The fastest way to count from 0 to 1,000,000 is to only change
-the bytes that actually change from x to x+1.
+The fastest way to count from 0 to 1,000,000 is to _only_ change
+the bytes that _actually_ change from x to x+1.
 
 We can write a C program to spit out 6502 assembly for us:
 
