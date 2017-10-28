@@ -4,13 +4,11 @@ The January 1984 issue of Nibble Magazine
 
 ![Cover](pics/page_cover.png)
 
-On page 62:
+Had this article `HYPERCOUNTER` by Ron Macken and Bill Consoli on page 62:
 
 ![Page 62](pics/page_62.png)
 
-Had this article `HYPERCOUNTER` by Ron Macken and Bill Consoli
-
-Unfortunately it is slow.
+Unfortunately it is slow. :-/
 
 The fastest way to count from 0 to 1,000,000 is to _only_ change
 the bytes that _actually_ change from x to x+1.
