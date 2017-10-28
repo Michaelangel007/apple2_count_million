@@ -107,3 +107,153 @@ Count_10_000
 
 ... Bob's your uncle.
 
+Is that the best we can do?
+
+No, we can continue unrolling even more!
+
+```asm
+; 100000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 0:0000
+    STX digit + 1       ; 000000
+    INC digit + 0       ; 100000
+
+; 200000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 1:0000
+    STX digit + 1       ; 100000
+    INC digit + 0       ; 200000
+
+; 300000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 2:0000
+    STX digit + 1       ; 200000
+    INC digit + 0       ; 300000
+
+; 400000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 3:0000
+    STX digit + 1       ; 400000
+    INC digit + 0       ; 400000
+
+; 500000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 4:0000
+    STX digit + 1       ; 400000
+    INC digit + 0       ; 500000
+
+; 600000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 5:0000
+    STX digit + 1       ; 500000
+    INC digit + 0       ; 600000
+
+; 700000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 6:0000
+    STX digit + 1       ; 600000
+    INC digit + 0       ; 700000
+
+; 800000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 7:0000
+    STX digit + 1       ; 700000
+    INC digit + 0       ; 800000
+
+; 900000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 8:0000
+    STX digit + 1       ; 800000
+    INC digit + 0       ; 900000
+
+;1000000
+    JSR Count_10_000    ; 010000
+    JSR Count_10_000    ; 020000
+    JSR Count_10_000    ; 030000
+    JSR Count_10_000    ; 040000
+    JSR Count_10_000    ; 050000
+    JSR Count_10_000    ; 060000
+    JSR Count_10_000    ; 070000
+    JSR Count_10_000    ; 080000
+    JSR Count_10_000    ; 090000
+    JSR Count_10_000    ; 9:0000
+    STX digit + 1       ; 900000
+    STX digit + 0       ; 000000
+    STY digit - 1       ;1000000
+    RTS
+```
+
+QED.
+
