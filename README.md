@@ -10,7 +10,7 @@ Had this article `HYPERCOUNTER` by Ron Macken and Bill Consoli on page 62:
 
 Unfortunately it is slow. :-/
 
-The fastest way to count from 0 to 1,000,000 is to _only_ change
+The fastest way to count from 1 to 1,000,000 is to _only_ change
 the bytes that _actually_ change from x to x+1.
 
 We can write a C program to spit out 6502 assembly for us:
@@ -37,6 +37,9 @@ We can write a C program to spit out 6502 assembly for us:
                 if( (before[x] == '0') && (x != 1) )
                     one( x );
                 else
+                if( (before[x] == '1') && (x != 1) )
+                    two( x );
+                else
                     inc( x );
             }
             else
@@ -46,6 +49,25 @@ We can write a C program to spit out 6502 assembly for us:
             x--;
         }
 ```
+
+You'll notice there are 4 variations of x++.  Why 4? Consider what happens to each digit:
+
+* 0 -> 1
+* 1 -> 2
+* 9 -> 0
+* remaining 2,3,4,5,6,7,8
+
+Since the 6502 has 3 registers, A, X, and Y we have 3 specializations where we can cache the constant values in registers:
+
+* X = 0
+* Y = 1
+* A = 2
+
+
+# Memory Size
+
+Depending on how much we want to loop-unroll we get this tradeoff:
+
 
 | End     | Memory  | Size      |
 |--------:|--------:|:----------|
@@ -63,16 +85,19 @@ digit = $401           ; VTAB 1:HTAB 2
 
     ORG $800
 
-    LDX #'0' + $80
-    LDY #'1' + $80      ; A,BCD,EFG
-    STX digit - 1       ; 0,BCD,EFG
-    STX digit + 0       ; 0,0CD,EFG
-    STX digit + 1       ; 0,00D,EFG
-    STX digit + 2       ; 0,000,EFG
-    STX digit + 3       ; 0,000,0FG
-    STX digit + 4       ; 0,000,00G
-    STX digit + 5       ; 0,000,000
+Prologue
+    LDA #'2' + $80                  ; +2 = 2
+    LDX #'0' + $80                  ; +2 = 4
+    LDY #'1' + $80      ; A,BCD,EFG ; +2 = 6
+    STX digit - 1       ; 0,BCD,EFG ; +4 = 10
+    STX digit + 0       ; 0,0CD,EFG ; +4 = 14
+    STX digit + 1       ; 0,00D,EFG ; +4 = 18
+    STX digit + 2       ; 0,000,EFG ; +4 = 22
+    STX digit + 3       ; 0,000,0FG ; +4 = 26
+    STX digit + 4       ; 0,000,00G ; +4 = 30
+;   STX digit + 5       ; 0,000,000 ; +4 = 34 ; <-- not needed since Count_10_000 sets to '1'
 
+Work
     JSR Count_100_000   ; 100000
     JSR Count_100_000   ; 200000
     JSR Count_100_000   ; 300000
@@ -83,6 +108,8 @@ digit = $401           ; VTAB 1:HTAB 2
     JSR Count_100_000   ; 800000
     JSR Count_100_000   ; 900000
     JSR Count_100_000   ; 000000
+
+Epilogue                            ;==10
     STX digit + 0       ; 000000
     STY digit - 1       ;1000000
     RTS
@@ -249,11 +276,26 @@ No, we can continue unrolling even more!
     JSR Count_10_000    ; 080000
     JSR Count_10_000    ; 090000
     JSR Count_10_000    ; 9:0000
-    STX digit + 1       ; 900000
-    STX digit + 0       ; 000000
-    STY digit - 1       ;1000000
-    RTS
+    STX digit + 1       ; 900000    ; +4 = 64
+    STX digit + 0       ; 000000    ; +4 = 68
+
+Epilogue                            ;==10
+    STY digit - 1       ;1000000    ; +4
+    RTS                             ; +6
+```
+
+# Total Time
+
+```
+Prologue     = +30
+Work         = +730
+Count_10_000 = +6,000,600
+Epilogue     = +10
+==================
+6,001,370 cycles
 ```
 
 QED.
+
+Who knew counting could be so complicatd! :-)
 

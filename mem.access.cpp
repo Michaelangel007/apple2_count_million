@@ -5,8 +5,8 @@ Michaelangel007
 
     g++ mem.access.cpp -o mem.access
 
-    make mem_access
-         mem_access > mem_access.s
+    make mem.access
+         mem.access > count.10000.s
 */
 
 // Includes _______________________________________________________________
@@ -29,7 +29,8 @@ Michaelangel007
     };
 
     int i;
-    int org = 0x863; // skip prologue -- see comment below
+    int org    = 0;
+    int cycles = 0;
 
 
 // Utility ________________________________________________________________
@@ -39,7 +40,8 @@ Michaelangel007
     {
         digits[ i ] = '0';
         printf( "    STX digit + %d       ; %s  @ %04X\n", i, digits, org );
-        org += 3;
+        org    += 3;
+        cycles += 4; // 8E: stx $abs (+4)
     }
 
     // Y = '1'
@@ -47,14 +49,24 @@ Michaelangel007
     {
         digits[ i ] = '1';
         printf( "    STY digit + %d       ; %s  @ %04X\n", i, digits, org );
-        org += 3;
+        org    += 3;
+        cycles += 4; // 8C: sty $abs (+4)
+    }
+
+    void two( int i )
+    {
+        digits[ i ] = '2';
+        printf( "    STA digit + %d       ; %s  @ %04X\n", i, digits, org );
+        org    += 3;
+        cycles += 4; // 8D: sta $abs +4
     }
 
     void inc( int i )
     {
         digits[i]++;
         printf( "    INC digit + %d       ; %s\n", i, digits );
-        org += 3;
+        org    += 3;
+        cycles += 6; // EEL inc $abs (+6)
     }
 
 // Main ===================================================================
@@ -63,6 +75,7 @@ int main( int nArg, char *aArg[] )
     digits[ NUM ] = 0; // NULL terminate for printf %s
 
 /*
+    printf( "    LDA #'2' + $80" ); 
     printf( "    LDX #'0' + $80      ; 1,000,000  Ver 3\n" ); org += 2;
     printf( "    LDY #'1' + $80      ; A,BCD,EFG\n" ); org += 2;
     printf( "    STX digit - 1       ; 0,BCD,EFG\n" ); org += 3;
@@ -81,54 +94,8 @@ int main( int nArg, char *aArg[] )
         );
         org += 3;
     }
+
 */
-
-#if 0
-digit = $401           ; VTAB 1:HTAB 2
-
-    ORG $800
-
-    LDX #'0' + $80
-    LDY #'1' + $80      ; A,BCD,EFG
-    STX digit - 1       ; 0,BCD,EFG
-    STX digit + 0       ; 0,0CD,EFG
-    STX digit + 1       ; 0,00D,EFG
-    STX digit + 2       ; 0,000,EFG
-    STX digit + 3       ; 0,000,0FG
-    STX digit + 4       ; 0,000,00G
-    STX digit + 5       ; 0,000,000
-
-    JSR Count_100_000   ; 100000
-    JSR Count_100_000   ; 200000
-    JSR Count_100_000   ; 300000
-    JSR Count_100_000   ; 400000
-    JSR Count_100_000   ; 500000
-    JSR Count_100_000   ; 600000
-    JSR Count_100_000   ; 700000
-    JSR Count_100_000   ; 800000
-    JSR Count_100_000   ; 900000
-    JSR Count_100_000   ; 000000
-    STX digit + 0       ; 000000
-    STY digit - 1       ;1000000
-    RTS
-
-Count_100_000
-    JSR Count_10_000    ; 010000
-    JSR Count_10_000    ; 020000
-    JSR Count_10_000    ; 030000
-    JSR Count_10_000    ; 040000
-    JSR Count_10_000    ; 050000
-    JSR Count_10_000    ; 060000
-    JSR Count_10_000    ; 070000
-    JSR Count_10_000    ; 080000
-    JSR Count_10_000    ; 090000
-    JSR Count_10_000    ;  00000
-    STX digit + 1       ; 000000
-    INC digit + 0       ; 100000
-    RTS
-
-Count_10_000
-#endif
 
 //  int end =    1000; //   $1568 <  1 KB
     int end =   10000; //   $8A98 ~ 33 KB
@@ -140,6 +107,11 @@ Count_10_000
 
     for( i = 0; i < NUM; i++ )
         digits[ i ] = '0';
+
+    printf( "; --- count.10000.s --- NOTE: This file was computer generated via: mem.access > count.10000.s\n" );
+
+    cycles = 0;
+    org    = 0x987; // skip prologue -- see: all.unrolled.s
 
     for( i = 0; i < end; i++ )
     {
@@ -158,6 +130,7 @@ Count_10_000
             printf( "\n" );
 
         // Infer what the minimal changes are
+        // Requires that we pre-load the X,Y,A regs with the constants 0, 1, 2, respectively.
         while( x > 0 )
         {
             int delta = after[x] - before[x];
@@ -176,6 +149,9 @@ Count_10_000
                 if( (before[x] == '0') && (x != 1) )
                     one( x );
                 else
+                if( (before[x] == '1') && (x != 1) )
+                    two( x );
+                else
                     inc( x );
             }
             else
@@ -185,8 +161,9 @@ Count_10_000
             x--;
         }
     }
-
-printf( "; END = %04X\n", org );
+printf( "    RTS\n" ); org += 3; cycles += 6;
+printf( "; PC     = %04X\n", org );
+printf( "; CYCLES = %d\n", cycles );
 
     return 0;
 }
