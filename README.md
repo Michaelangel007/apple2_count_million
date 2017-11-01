@@ -46,8 +46,8 @@ Which generates this binary:
 Unfortunately it is S-L-O-W and buggy. :-/
 
 * The Y-Reg is unused. We could cache two constants in registers:
-  *  A = $B9 (`9`) and
-  * `Y = $B0 (`0`) instead of constantly reloading A on $30F and $31C
+  * A = $B9 (`9`) and
+  * Y = $B0 (`0`) instead of constantly reloading A on $30F and $31C
 * It uses the slow 7 cycle `INC $abs,X`. This is done 1,000,000 times. Faster is the 4 cycle `INC $abs`
 * It has an _off-by-one_ bug -- it doesn't actually display 100,000,000. The last number two numbers output are:
   * 99,999,999
@@ -55,7 +55,7 @@ Unfortunately it is S-L-O-W and buggy. :-/
 
 Other problems include:
 
-* It includes your typical _"No Shit, Sherlock!"_ crappy verbose commenting
+* It includes your typical _"No Shit, Sherlock!"_ crappy verbose commenting.
 
 We are going to change the range above (0 - 99,999,999) to (1 - 1,000,000) since on c.s.a2 this similar problem was asked:
 
@@ -408,7 +408,7 @@ How well did we do?
 
 Not bad!
 
-Who knew counting could be so complicatd! :-)
+Who knew counting could be so complicated! :-)
 
 QED.
 
